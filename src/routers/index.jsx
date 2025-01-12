@@ -6,6 +6,7 @@ import Blokeds from "../pages/Blokeds";
 import Stuffs from "../pages/Stuffs";
 import Tasks from "../pages/Tasks";
 import Notfound from "../pages/Notfound";
+import Home from "../pages/Home";
 
 const MainRouter = () => {
   return (
@@ -15,6 +16,10 @@ const MainRouter = () => {
           path: "/",
           element: <Main />,
           children: [
+            {
+              path: "/",
+              element: <Home />,
+            },
             {
               path: "managers",
               element: <Managers />,

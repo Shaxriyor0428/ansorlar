@@ -3,5 +3,6 @@
 @tailwind utilities;
 
 #admin .active {
-    color: red;
+    color: black;
+    background: #E8E8E8;
 }
