@@ -5,7 +5,11 @@ const managerApi = api.injectEndpoints({
       query: () => "/managers",
       providesTags: ["Managers"],
     }),
+    getEmployees: build.query({
+      query: () => "/employees",
+      providesTags: ["Employees"],
+    }),
   }),
 });
 
-export const { useGetManagersQuery } = managerApi;
+export const { useGetManagersQuery, useGetEmployeesQuery } = managerApi;
