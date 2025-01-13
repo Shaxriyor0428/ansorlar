@@ -1,30 +1,21 @@
-import React, { useState } from "react";
+import React from "react";
 import { Pagination, MenuItem, Select } from "@mui/material";
 
-const Employees = ({ data, route }) => {
-  const [page, setPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-
+const Employees = ({
+  data,
+  route,
+  page,
+  rowsPerPage,
+  totalCount,
+  onPageChange,
+  onRowsPerPageChange,
+}) => {
   const filteredUsers =
     route === "block"
       ? data?.filter((user) => !user?.isActive)
       : route === "manager"
       ? data?.filter((user) => user?.type === "manager")
       : data;
-
-  const paginatedUsers = filteredUsers?.slice(
-    (page - 1) * rowsPerPage,
-    page * rowsPerPage
-  );
-
-  const handleChangePage = (event, value) => {
-    setPage(value);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(1);
-  };
 
   return (
     <div className="p-4">
@@ -40,7 +31,7 @@ const Employees = ({ data, route }) => {
         </thead>
 
         <tbody>
-          {paginatedUsers?.map((user, inx) => (
+          {filteredUsers?.map((user, inx) => (
             <tr key={inx} className="hover:bg-gray-100">
               <td className="border-b p-2">
                 {user?.name} {user?.last_name}
@@ -75,19 +66,19 @@ const Employees = ({ data, route }) => {
         <div>
           {`${(page - 1) * rowsPerPage + 1}–${Math.min(
             page * rowsPerPage,
-            filteredUsers?.length
-          )} из ${filteredUsers?.length || 0}`}
+            totalCount
+          )} из ${totalCount}`}
         </div>
         <Pagination
-          count={Math.ceil(filteredUsers?.length / rowsPerPage)}
+          count={Math.ceil(totalCount / rowsPerPage)}
           page={page}
-          onChange={handleChangePage}
+          onChange={onPageChange}
           color="primary"
         />
         <div className="flex items-center space-x-4">
           <Select
             value={rowsPerPage}
-            onChange={handleChangeRowsPerPage}
+            onChange={onRowsPerPageChange}
             displayEmpty
             variant="outlined"
             size="small"
