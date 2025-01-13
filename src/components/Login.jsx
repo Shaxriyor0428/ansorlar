@@ -29,10 +29,10 @@ const Login = ({ close }) => {
   const handleForm = async (e) => {
     e.preventDefault();
     try {
-      const token = await getToken(data).unwrap(); 
+      const token = await getToken(data).unwrap();
       dispatch(saveToken(token.accessToken));
       setData(initialState);
-      close()
+      close();
     } catch (error) {
       setData((prevData) => ({
         ...prevData,
@@ -43,7 +43,6 @@ const Login = ({ close }) => {
 
   return (
     <div className="w-[400px] my-6 bg-white rounded-lg shadow-lg p-8 relative">
-
       <h2 className="text-center text-2xl font-bold text-gray-800">Kirish</h2>
 
       <form action="#" onSubmit={handleForm} className="mt-6">
@@ -92,9 +91,12 @@ const Login = ({ close }) => {
               />
             )}
           </div>
-            {data.error && <p className="text-red-500 mt-2">{data.error}</p>}
+          {data.error && <p className="text-red-500 mt-2">{data.error}</p>}
         </div>
-        <button type="submit" className="w-full mt-6 bg-green-500 text-white py-3 rounded-lg text-lg font-semibold shadow-md hover:bg-green-600 hover:shadow-lg transition-all">
+        <button
+          type="submit"
+          className="w-full mt-6 bg-green-500 text-white py-3 rounded-lg text-lg font-semibold shadow-md hover:bg-green-600 hover:shadow-lg transition-all"
+        >
           Kirish
         </button>
       </form>

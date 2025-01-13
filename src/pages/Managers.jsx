@@ -5,9 +5,11 @@ import {
   useGetManagersQuery,
 } from "../redux/api/stuffs";
 import { IoIosSearch } from "react-icons/io";
+import CreateStaff from "../components/CreateStaff";
 
 const Managers = () => {
   const [page, setPage] = useState(1);
+  const [open, setOpen] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const shuffleArray = (array) => {
@@ -42,9 +44,14 @@ const Managers = () => {
   return (
     <div className="p-6">
       <div>
-        <button className="bg-[#14B890] text-white py-3 px-4 rounded-lg mt-[28px] mb-5">
+        <button
+          onClick={() => setOpen(true)}
+          className="bg-[#14B890] text-white py-3 px-4 rounded-lg mt-[28px] mb-5"
+        >
           + Hodim qo'shish
         </button>
+        {open && <CreateStaff setOpen={setOpen} />}
+
         <div className="relative h-full w-full mb-3">
           <IoIosSearch className="text-xl absolute top-[50%] translate-y-[-50%] left-2" />
           <input

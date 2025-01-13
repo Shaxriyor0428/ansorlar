@@ -34,6 +34,22 @@ const managerApi = api.injectEndpoints({
       }),
       invalidatesTags: ["Employees", "Managers"],
     }),
+    createManager: build.mutation({
+      query: (body) => ({
+        url: "/managers",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Managers"],
+    }),
+    createEmployee: build.mutation({
+      query: (body) => ({
+        url: "/employees",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Employees"],
+    }),
   }),
 });
 
@@ -44,4 +60,6 @@ export const {
   useGetAllManagersQuery,
   useDeleteManagerMutation,
   useDeleteEmployeeMutation,
+  useCreateEmployeeMutation,
+  useCreateManagerMutation,
 } = managerApi;

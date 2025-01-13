@@ -5,6 +5,7 @@ import {
   useDeleteEmployeeMutation,
   useDeleteManagerMutation,
 } from "../redux/api/stuffs";
+import CreateStaff from "./CreateStaff";
 
 const Employees = ({
   data,
@@ -16,6 +17,7 @@ const Employees = ({
   onRowsPerPageChange,
 }) => {
   const [open, setOpen] = useState(false);
+  // const [editData, setEditData] = useState(intialState);
   const [remove, setRemove] = useState({ id: "", type: "" });
   const [deleteManager] = useDeleteManagerMutation();
   const [deleteEmployee] = useDeleteEmployeeMutation();
@@ -44,6 +46,10 @@ const Employees = ({
   const cancelDelete = () => {
     setOpen(false);
     setRemove({ id: "", type: "" });
+  };
+
+  const handleEdit = (id, type) => {
+    // setOpen(true);
   };
 
   return (
@@ -111,7 +117,10 @@ const Employees = ({
                 )}
               </td>
               <td className="border-b p-3 flex justify-end space-x-2">
-                <button className="bg-green-500 hover:bg-blue-600 text-white font-medium rounded-md px-4 py-2 transition">
+                <button
+                  onClick={() => handleEdit(user?.id, user?.type)}
+                  className="bg-green-500 hover:bg-blue-600 text-white font-medium rounded-md px-4 py-2 transition"
+                >
                   O'zgartirish
                 </button>
                 <button
