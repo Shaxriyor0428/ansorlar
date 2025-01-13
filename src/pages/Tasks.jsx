@@ -73,7 +73,7 @@ const Tasks = () => {
           />
         </div>
       </div>
-      <div className="w-[1040px] border border-gray-200 rounded-2xl">
+      <div className="w-full border border-gray-200 rounded-2xl">
         {data?.map((item, index) => (
           <div
             key={index}
