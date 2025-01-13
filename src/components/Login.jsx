@@ -43,12 +43,6 @@ const Login = ({ close }) => {
 
   return (
     <div className="w-[400px] my-6 bg-white rounded-lg shadow-lg p-8 relative">
-      <button className="absolute top-4 right-4 p-2 rounded-full bg-gray-300">
-        <MdOutlineCancel
-          size={22}
-          className="text-gray-600 bg-gray-300 rounded-full"
-        />
-      </button>
 
       <h2 className="text-center text-2xl font-bold text-gray-800">Kirish</h2>
 
@@ -100,7 +94,7 @@ const Login = ({ close }) => {
           </div>
             {data.error && <p className="text-red-500 mt-2">{data.error}</p>}
         </div>
-        <button className="w-full mt-6 bg-green-500 text-white py-3 rounded-lg text-lg font-semibold shadow-md hover:bg-green-600 hover:shadow-lg transition-all">
+        <button type="submit" className="w-full mt-6 bg-green-500 text-white py-3 rounded-lg text-lg font-semibold shadow-md hover:bg-green-600 hover:shadow-lg transition-all">
           Kirish
         </button>
       </form>
