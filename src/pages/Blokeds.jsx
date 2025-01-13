@@ -62,7 +62,7 @@ const Blokeds = () => {
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(1); // Reset page to 1 when the rowsPerPage changes
+    setPage(1);
   };
 
   return (
