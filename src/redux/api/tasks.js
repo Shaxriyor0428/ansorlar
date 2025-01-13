@@ -11,8 +11,8 @@ const taskApi = api.injectEndpoints({
       invalidatesTags: ["Tasks"],
     }),
     getTasks: build.query({
-      query: ({ page = 1, limit = 5 }) =>
-        `/tasks?_limit=${limit}&_page=${page}`,
+      query: () =>
+        `/tasks`,
       providesTags: ["Tasks"],
     }),
     deleteTask: build.mutation({

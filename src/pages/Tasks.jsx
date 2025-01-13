@@ -10,8 +10,8 @@ import Modal from "../components/Modal";
 const Tasks = () => {
   const { data } = useGetTasksQuery({});
   const [deleteTask] = useDeleteTaskMutation();
-  const [createTask, { isLoading, isSuccess, isError }] =
-    useCreateTaskMutation(); // Mutatsiya hook
+  const [createTask] =
+    useCreateTaskMutation(); 
 
   const [openAddTaskModal, setOpenAddTaskModal] = useState(false);
   const [newTask, setNewTask] = useState({ name: "", type: "" });
@@ -56,13 +56,12 @@ const Tasks = () => {
 
   const handleAddTask = (e) => {
     e.preventDefault();
-    // Yangi vazifani APIga yuborish funksiyasini qo‘shing
     createTask(newTask);
     handleCloseModal();
   };
 
   return (
-    <div className="flex gap-4 mt-5 ml-[30px] flex-col">
+    <div className="flex gap-4 mt-5 ml-[30px] flex-col mb-10">
       {open && remove.id && (
         <Modal close={() => setOpen(false)}>
           <div className="bg-white rounded-xl shadow-2xl p-8 w-[400px] max-w-[90%] relative text-black">
@@ -97,7 +96,7 @@ const Tasks = () => {
       )}
       ,
       {openAddTaskModal && (
-        <Modal close={handleCloseModal}>
+        <Modal >
           <div className="bg-white rounded-xl shadow-2xl p-8 w-[400px] max-w-[90%] text-black">
             <h3 className="text-xl font-semibold text-gray-800 mb-4">
               Vazifa qo'shish
