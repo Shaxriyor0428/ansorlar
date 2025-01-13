@@ -55,7 +55,7 @@ const Blokeds = () => {
   }
 
   const userData = shuffleArray([...(employees || []), ...(managers || [])]);
-  console.log(userData);
+  // console.log(userData);
   const handleChangePage = (event, value) => {
     setPage(value);
   };
