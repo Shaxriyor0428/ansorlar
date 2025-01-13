@@ -1,11 +1,19 @@
 import React, { useState } from "react";
 import { Pagination } from "@mui/material";
 
-const Employees = ({ data }) => {
+const Employees = ({ data, route }) => {
   const [page, setPage] = useState(1);
   const [rowsPerPage] = useState(10);
 
-  const paginatedUsers = data?.slice(
+  // Filtr shartlari to'g'irlandi
+  const filteredUsers =
+    route === "block"
+      ? data?.filter((user) => !user?.isActive)
+      : route === "manager"
+      ? data?.filter((user) => user?.type === "manager") // `user.type === "manager"` sharti o'zgartirildi
+      : data;
+
+  const paginatedUsers = filteredUsers?.slice(
     (page - 1) * rowsPerPage,
     page * rowsPerPage
   );
@@ -20,17 +28,17 @@ const Employees = ({ data }) => {
         <thead className="bg-gray-200 h-[76px]">
           <tr>
             <th className="p-2 text-left">Familiya Ism</th>
-            <th className=" p-2 text-left">Turi</th>
-            <th className=" p-2 text-left">E-mail</th>
-            <th className=" p-2 text-left">Holati</th>
-            <th className=" p-2 text-center">Amallar</th>
+            <th className="p-2 text-left">Turi</th>
+            <th className="p-2 text-left">E-mail</th>
+            <th className="p-2 text-left">Holati</th>
+            <th className="p-2 text-center">Amallar</th>
           </tr>
         </thead>
 
         <tbody>
           {paginatedUsers?.map((user, inx) => (
             <tr key={inx} className="hover:bg-gray-100">
-              <td className=" border-b p-2">
+              <td className="border-b p-2">
                 {user?.name} {user?.last_name}
               </td>
               <td className="border-b p-2">{user?.type}</td>
@@ -41,10 +49,12 @@ const Employees = ({ data }) => {
                     Active
                   </span>
                 ) : (
-                  ""
+                  <span className="py-1 px-2 rounded-md text-red-500 bg-red-100">
+                    Block
+                  </span>
                 )}
               </td>
-              <td className="border-b p-2 flex justify-center space-x-2 ">
+              <td className="border-b p-2 flex justify-center space-x-2">
                 <button className="bg-[#14B890] text-white font-medium rounded-md px-4 py-2">
                   O'zgartirish
                 </button>
@@ -57,9 +67,15 @@ const Employees = ({ data }) => {
         </tbody>
       </table>
 
-      <div className="flex justify-center my-6">
+      <div className="flex justify-between my-6">
+        <div>
+          {`${(page - 1) * rowsPerPage + 1}–${Math.min(
+            page * rowsPerPage,
+            filteredUsers?.length
+          )} из ${filteredUsers?.length || 0}`}
+        </div>
         <Pagination
-          count={3}
+          count={3} 
           page={page}
           onChange={handleChangePage}
           color="primary"
