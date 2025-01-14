@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import {
   useCreateEmployeeMutation,
   useCreateManagerMutation,
+  useUpdateEmployeeMutation,
+  useUpdateManagerMutation,
 } from "../redux/api/stuffs";
 
 const initialState = {
@@ -14,20 +16,20 @@ const initialState = {
   error: "",
 };
 
-const CreateStaff = ({ setOpen, isUpdate, Data }) => {
+const CreateStaff = ({ setOpen, isUpdate, Data, setEditOpen }) => {
   const [data, setData] = useState(initialState);
 
   const [createManager] = useCreateManagerMutation();
   const [createEmployee] = useCreateEmployeeMutation();
+  const [updateManager] = useUpdateManagerMutation();
+  const [updateEmployee] = useUpdateEmployeeMutation();
 
-  console.log(Data);
   useEffect(() => {
     if (Data) {
       setData(Data);
     }
   }, [Data]);
 
-  console.log(data);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setData((prevData) => ({
@@ -35,30 +37,32 @@ const CreateStaff = ({ setOpen, isUpdate, Data }) => {
       [name]: value,
     }));
   };
-  const handleCancel = (e) => {
-    // e.preventDefault();
+
+  const handleCancel = () => {
     setOpen(false);
+    setEditOpen(false);
     setData(initialState);
   };
 
   const handleForm = async (e) => {
     e.preventDefault();
+    
+    const body = { ...data };
+
     try {
       if (isUpdate) {
-        if(data.type == "manager"){
-          await updateManager(data).unwrap();
-        } else {
-          await updateEmployee(data).unwrap();
-        }
+        const updateFn =
+          data.type === "manager" ? updateManager : updateEmployee;
+        await updateFn({ id: Data.id, ...body }).unwrap();
       } else {
-        if (data.type === "manager") {
-          await createManager(data).unwrap();
-        } else {
-          await createEmployee(data).unwrap();
-        }
+        const createFn =
+          data.type === "manager" ? createManager : createEmployee;
+        await createFn(body).unwrap();
       }
+
       setData(initialState);
       setOpen(false);
+      setEditOpen(false);
     } catch (error) {
       setData((prevData) => ({
         ...prevData,
@@ -73,9 +77,9 @@ const CreateStaff = ({ setOpen, isUpdate, Data }) => {
         <h2 className="text-center text-2xl font-bold text-gray-800">
           {isUpdate ? "Xodimni o'zgartirish" : "Xodim yaratish"}
         </h2>
-
         <form action="#" onSubmit={handleForm} className="mt-6">
           <div className="flex flex-col gap-4">
+            {/* Form Fields */}
             <label
               htmlFor="last_name"
               className="text-sm font-medium text-gray-600"
@@ -141,7 +145,7 @@ const CreateStaff = ({ setOpen, isUpdate, Data }) => {
               className="text-sm font-medium text-gray-600"
             >
               Holati
-            </label>``
+            </label>
             <select
               name="is_active"
               value={data.is_active}
@@ -158,7 +162,7 @@ const CreateStaff = ({ setOpen, isUpdate, Data }) => {
           </div>
           <div className="flex gap-2">
             <button
-              onClick={() => handleCancel()}
+              onClick={handleCancel}
               type="button"
               className="w-full mt-6 bg-blue-500 text-white py-3 rounded-lg text-lg font-semibold shadow-md hover:bg-blue-600 hover:shadow-lg transition-all"
             >

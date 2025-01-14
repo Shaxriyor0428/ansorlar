@@ -20,7 +20,6 @@ const Managers = () => {
 
   const { data: allManagers } = useGetAllManagersQuery();
 
-  // Filter the managers based on the search term
   const filteredManagers = (allManagers || []).filter((item) =>
     item.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -33,19 +32,16 @@ const Managers = () => {
     }
     return array;
   };
-  // Shuffle the filtered managers
   const userData = shuffleArray(filteredManagers);
 
-  // Pagination logic
   const paginatedManagers = userData.slice(
     (page - 1) * rowsPerPage,
     page * rowsPerPage
   );
 
-  // Handle search term change
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
-    setPage(1); // Reset to the first page when search term changes
+    setPage(1);
   };
 
   const handleChangePage = (event, value) => {
@@ -54,7 +50,7 @@ const Managers = () => {
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(1); // Reset to the first page when rows per page changes
+    setPage(1);
   };
 
   return (

@@ -19,9 +19,10 @@ const Employees = ({
   onPageChange,
   onRowsPerPageChange,
 }) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
   // const [editData, setEditData] = useState(intialState);
   const [remove, setRemove] = useState({ id: "", type: "" });
   const [deleteManager] = useDeleteManagerMutation();
@@ -56,7 +57,7 @@ const Employees = ({
 
   const handleEdit = (user) => {
     setEditUser(user);
-    setOpen(true);
+    setEditOpen(true);
   };
 
   const handleChangeStatus = (user) => {
@@ -65,12 +66,19 @@ const Employees = ({
 
   const handleGetEmployee = (user) => {
     dispatch(setSelectedEmployee(user));
-    navigate('/')
-
-  }
+    navigate("/");
+  };
 
   return (
     <div className="p-4">
+      {editOpen && (
+        <CreateStaff
+          Data={editUser}
+          isUpdate={true}
+          setEditOpen={setEditOpen}
+          setOpen={setOpen}
+        />
+      )}
       {open && remove.id && (
         <Modal close={() => setOpen(false)}>
           <div className="bg-white rounded-xl shadow-2xl p-8 w-[400px] max-w-[90%] relative text-black">
@@ -149,13 +157,7 @@ const Employees = ({
                 >
                   O'zgartirish
                 </button>
-                {editUser && (
-                  <CreateStaff
-                    setOpen={setOpen}
-                    isUpdate={true}
-                    Data={editUser}
-                  />
-                )}
+
                 <button
                   onClick={() => handleClick(user?.id, user?.type)}
                   className="bg-red-500 hover:bg-red-600 text-white font-medium rounded-md px-4 py-2 transition"

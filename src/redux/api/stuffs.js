@@ -82,6 +82,22 @@ const managerApi = api.injectEndpoints({
       query: (name) => `/employees?name_like=${name}`,
       providesTags: ["Employees"],
     }),
+    updateEmployee: build.mutation({
+      query: ({ id, body }) => ({
+        url: `/employees/${id}`,
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: ["Employees"],
+    }),
+    updateManager: build.mutation({
+      query: ({ id, body }) => ({
+        url: `/managers/${id}`,
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: ["Managers"],
+    }),
   }),
 });
 
@@ -99,5 +115,7 @@ export const {
   useAddTasksForManagerMutation,
   useAddTasksForEmployeeMutation,
   useManagerSearchByNameQuery,
-  useEmployeeSearchByNameQuery
+  useEmployeeSearchByNameQuery,
+  useUpdateEmployeeMutation,
+  useUpdateManagerMutation,
 } = managerApi;
