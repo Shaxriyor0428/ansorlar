@@ -31,7 +31,7 @@ const Managers = () => {
     allManagers?.filter((item) => item.type === "manager").length || 0;
 
   const userData = shuffleArray([...(managers || [])]);
-  console.log(userData);
+  // console.log(userData);
   const handleChangePage = (event, value) => {
     setPage(value);
   };

@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { Pagination, MenuItem, Select } from "@mui/material";
 import Modal from "./Modal";
+import { useDispatch } from "react-redux";
 import {
   useDeleteEmployeeMutation,
   useDeleteManagerMutation,
 } from "../redux/api/stuffs";
 import CreateStaff from "./CreateStaff";
+import { setSelectedEmployee } from "../redux/slices/employeeSlice";
+import { useNavigate } from "react-router-dom";
 
 const Employees = ({
   data,
@@ -16,6 +19,8 @@ const Employees = ({
   onPageChange,
   onRowsPerPageChange,
 }) => {
+  const navigate = useNavigate()
+  const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   // const [editData, setEditData] = useState(intialState);
   const [remove, setRemove] = useState({ id: "", type: "" });
@@ -51,6 +56,16 @@ const Employees = ({
   const handleEdit = (id, type) => {
     // setOpen(true);
   };
+
+  const handleChangeStatus = (user) => {
+    // console.log(user);
+  };
+
+  const handleGetEmployee = (user) => {
+    dispatch(setSelectedEmployee(user));
+    navigate('/')
+
+  }
 
   return (
     <div className="p-4">
@@ -100,18 +115,24 @@ const Employees = ({
         <tbody>
           {filteredUsers?.map((user, index) => (
             <tr key={index} className="hover:bg-gray-100">
-              <td className="border-b p-3">
+              <td onClick={()=>handleGetEmployee(user)} className="border-b p-3">
                 {user?.name} {user?.last_name}
               </td>
               <td className="border-b p-3">{user?.type}</td>
               <td className="border-b p-3">{user?.email}</td>
               <td className="border-b p-3">
                 {user?.isActive ? (
-                  <span className="py-1 px-2 rounded-md text-green-500 bg-green-100">
+                  <span
+                    onClick={() => handleChangeStatus(user)}
+                    className="py-1 px-2 rounded-md text-green-500 bg-green-100"
+                  >
                     Active
                   </span>
                 ) : (
-                  <span className="py-1 px-2 rounded-md text-red-500 bg-red-100">
+                  <span
+                    onClick={() => handleChangeStatus(user)}
+                    className="py-1 px-2 rounded-md text-red-500 bg-red-100"
+                  >
                     Block
                   </span>
                 )}

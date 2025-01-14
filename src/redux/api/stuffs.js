@@ -2,6 +2,14 @@ import { api } from ".";
 
 const managerApi = api.injectEndpoints({
   endpoints: (build) => ({
+    getSingleEmployee: build.query({
+      query: (id) => `/employees/${id}`,
+      providesTags: ["Employees"],
+    }),
+    getSingleManager: build.query({
+      query: (id) => `/managers/${id}`,
+      providesTags: ["Managers"],
+    }),
     getManagers: build.query({
       query: ({ page = 1, limit = 5 }) =>
         `/managers?_limit=${limit}&_page=${page}`,
@@ -50,10 +58,28 @@ const managerApi = api.injectEndpoints({
       }),
       invalidatesTags: ["Employees"],
     }),
+    addTasksForManager: build.mutation({
+      query: ({ managerId, body }) =>({
+        url: `/managers/${managerId}`,
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: ["Managers"],
+    }),
+    addTasksForEmployee: build.mutation({
+      query: ({ employeeId, body }) =>({
+        url: `/employees/${employeeId}`,
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: ["Employees"],
+    }),
   }),
 });
 
 export const {
+  useGetSingleEmployeeQuery,
+  useGetSingleManagerQuery,
   useGetManagersQuery,
   useGetEmployeesQuery,
   useGetAllEmployeesQuery,
@@ -62,4 +88,6 @@ export const {
   useDeleteEmployeeMutation,
   useCreateEmployeeMutation,
   useCreateManagerMutation,
+  useAddTasksForManagerMutation,
+  useAddTasksForEmployeeMutation,
 } = managerApi;
