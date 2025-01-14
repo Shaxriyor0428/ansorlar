@@ -12,6 +12,7 @@ const taskApi = api.injectEndpoints({
     }),
     getTasks: build.query({
       query: () => `/tasks`,
+      providesTags: ["Tasks"],
       providesTags: ["Tasks", "Managers", "Employees"],
     }),
     deleteTask: build.mutation({
@@ -21,6 +22,14 @@ const taskApi = api.injectEndpoints({
       }),
       invalidatesTags: ["Tasks", "Employees", "Managers"],
     }),
+    updateTask: build.mutation({
+      query: (task) => ({
+        url: `/tasks/${task.id}`,
+        method: "PATCH",
+        body: task,
+      }),
+      invalidatesTags: ["Tasks"],
+    }),
   }),
 });
 
@@ -28,4 +37,5 @@ export const {
   useGetTasksQuery,
   useDeleteTaskMutation,
   useCreateTaskMutation,
+  useUpdateTaskMutation,
 } = taskApi;

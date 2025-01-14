@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   useCreateTaskMutation,
   useDeleteTaskMutation,
+  useUpdateTaskMutation,
   useGetTasksQuery,
 } from "../redux/api/tasks";
 import { IoIosSearch } from "react-icons/io";
@@ -10,8 +11,8 @@ import Modal from "../components/Modal";
 const Tasks = () => {
   const { data } = useGetTasksQuery({});
   const [deleteTask] = useDeleteTaskMutation();
-  const [createTask] =
-    useCreateTaskMutation(); 
+  const [createTask] = useCreateTaskMutation(); 
+  const [updateTask] = useUpdateTaskMutation();
 
   const [openAddTaskModal, setOpenAddTaskModal] = useState(false);
   const [newTask, setNewTask] = useState({ name: "", type: "" });
@@ -19,11 +20,7 @@ const Tasks = () => {
   const [open, setOpen] = useState(false);
   const [remove, setRemove] = useState({ id: "", type: "" });
 
-  const [openModalTask, setOpenModalTask] = useState(false);
-
-  const handleAddTaskModal = () => {
-    setOpenAddTaskModal(true);
-  };
+  const handleAddTaskModal = () => {setOpenAddTaskModal(true);};
 
   const handleTaskInputChange = (e) => {
     const { name, value } = e.target;
@@ -32,6 +29,35 @@ const Tasks = () => {
       [name]: value,
     }));
   };
+// 
+  const [editTask, setEditTask] = useState({ id: "", name: "", type: "" });
+  const [openEditTaskModal, setOpenEditTaskModal] = useState(false);
+
+  const handleEdit = (task) => {
+    setEditTask({ id: task.id, name: task.name, type: task.type });
+    setOpenEditTaskModal(true);
+  };
+
+  const handleEditTaskChange = (e) => {
+    const { name, value } = e.target;
+    setEditTask((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleUpdateTask = (e) => {
+    e.preventDefault();
+    updateTask(editTask);
+    setOpenEditTaskModal(false);
+    setEditTask({ id: "", name: "", type: "" });
+  };
+
+  const handleCloseEditModal = () => {
+    setOpenEditTaskModal(false);
+    setEditTask({ id: "", name: "", type: "" });
+  };
+// 
 
   const handleCloseModal = () => {
     setOpenAddTaskModal(false);
@@ -95,8 +121,68 @@ const Tasks = () => {
         </Modal>
       )}
       ,
+
+
+
+      {openEditTaskModal && (
+        <Modal>
+          <div className="bg-white rounded-xl shadow-2xl p-8 w-[400px] max-w-[90%] text-black">
+            <h3 className="text-xl font-semibold text-gray-800 mb-4">
+              Vazifani tahrirlash
+            </h3>
+            <form onSubmit={handleUpdateTask} className="flex flex-col gap-4">
+              <label className="text-sm font-medium text-gray-600">
+                Hodim turi
+              </label>
+              <select
+                name="type"
+                value={editTask.type}
+                onChange={handleEditTaskChange}
+                required
+                className="w-full outline-none rounded-lg py-3 px-5 border border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+              >
+                <option value="">Hodim turini tanlang</option>
+                <option value="manager">Manager</option>
+                <option value="employee">Employee</option>
+              </select>
+
+              <label className="text-sm font-medium text-gray-600">
+                Vazifa nomi
+              </label>
+              <input
+                name="name"
+                value={editTask.name}
+                onChange={handleEditTaskChange}
+                required
+                className="w-full outline-none rounded-lg py-3 px-5 border border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                type="text"
+                placeholder="Vazifa nomini kiriting"
+              />
+
+              <div className="flex justify-end gap-4">
+                <button
+                  type="button"
+                  onClick={handleCloseEditModal}
+                  className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold rounded-md px-4 py-2 transition"
+                >
+                  Bekor qilish
+                </button>
+                <button
+                  type="submit"
+                  className="bg-green-500 hover:bg-green-600 text-white font-semibold rounded-md px-4 py-2 transition"
+                >
+                  Saqlash
+                </button>
+              </div>
+            </form>
+          </div>
+        </Modal>
+      )}
+
+
+
       {openAddTaskModal && (
-        <Modal >
+        <Modal>
           <div className="bg-white rounded-xl shadow-2xl p-8 w-[400px] max-w-[90%] text-black">
             <h3 className="text-xl font-semibold text-gray-800 mb-4">
               Vazifa qo'shish
@@ -182,6 +268,7 @@ const Tasks = () => {
               >
                 O'zgartirish
               </button>
+
               <button
                 onClick={() => handleClick(item?.id, item?.type)}
                 className="bg-red-500 text-white font-medium rounded-md px-4 py-2"
