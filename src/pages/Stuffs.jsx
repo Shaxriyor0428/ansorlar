@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  useGetAllEmployeesQuery,
-  useGetAllManagersQuery,
+  useEmployeeSearchByNameQuery,
+  useManagerSearchByNameQuery,
   useGetEmployeesQuery,
   useGetManagersQuery,
+  useGetAllEmployeesQuery,
+  useGetAllManagersQuery,
 } from "../redux/api/stuffs";
 import Employees from "../components/Employees";
 import { IoIosSearch } from "react-icons/io";
@@ -13,52 +15,41 @@ const Stuffs = () => {
   const [page, setPage] = useState(1);
   const [open, setOpen] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const shuffleArray = (array) => {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
   };
-
-  let employeesLimit = Math.ceil((rowsPerPage * 3) / 5);
-  let managersLimit = rowsPerPage - employeesLimit;
-
-  if (rowsPerPage === 15) {
-    employeesLimit = 9;
-    managersLimit = 6;
-  } else if (rowsPerPage === 20) {
-    employeesLimit = 12;
-    managersLimit = 8;
-  }
 
   const { data: employees, isLoading: employeesLoading } = useGetEmployeesQuery(
     {
       page,
-      limit: employeesLimit,
+      limit: Math.ceil((rowsPerPage * 3) / 5),
     }
   );
 
   const { data: managers, isLoading: managersLoading } = useGetManagersQuery({
     page,
-    limit: managersLimit,
+    limit: rowsPerPage - Math.ceil((rowsPerPage * 3) / 5),
   });
 
   const { data: allEmployees } = useGetAllEmployeesQuery();
   const { data: allManagers } = useGetAllManagersQuery();
 
-  const totalCount = (allEmployees?.length || 0) + (allManagers?.length || 0);
+  const { data: searchedEmployees } = useEmployeeSearchByNameQuery(searchTerm, {
+    skip: !searchTerm,
+  });
+  const { data: searchedManagers } = useManagerSearchByNameQuery(searchTerm, {
+    skip: !searchTerm,
+  });
 
-  if (employeesLoading || managersLoading) {
-    return (
-      <div className="text-center my-4 ">
-        <h1>Yuklanmoqda...</h1>
-      </div>
-    );
-  }
+  const totalCount = searchTerm
+    ? (searchedEmployees?.length || 0) + (searchedManagers?.length || 0)
+    : (allEmployees?.length || 0) + (allManagers?.length || 0);
 
-  const userData = shuffleArray([...(employees || []), ...(managers || [])]);
+  const userData = searchTerm
+    ? [...(searchedEmployees || []), ...(searchedManagers || [])]
+    : [...(employees || []), ...(managers || [])];
 
   const handleChangePage = (event, value) => {
     setPage(value);
@@ -81,11 +72,13 @@ const Stuffs = () => {
         {open && <CreateStaff setOpen={setOpen} />}
 
         <div className="relative h-full w-full mb-3">
-          <IoIosSearch className="text-xl absolute top-[50%] translate-y-[-50%] left-2" />
+          <IoIosSearch className="text-xl absolute top-[50%] translate-y-[-50%] left-2 cursor-pointer" />
           <input
             type="text"
             className="py-3 pl-10 outline-none border rounded-lg w-[400px] px-2"
             placeholder="Ism bo'yicha qidirish"
+            value={searchTerm}
+            onChange={handleSearchChange}
           />
         </div>
       </div>

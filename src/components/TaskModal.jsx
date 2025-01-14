@@ -8,18 +8,16 @@ import {
 } from "../redux/api/stuffs";
 import { useGetTasksQuery } from "../redux/api/tasks";
 
-
 const TaskModal = ({ close, employee }) => {
-  const { data: allTasks = [], isLoading: allTasksLoading } = useGetTasksQuery(
-    {}
-  ); 
+  const { data: allTasks = [], isLoading: allTasksLoading } =
+    useGetTasksQuery();
   const { data, isLoading: employeeTasksLoading } =
     employee.type === "employee"
       ? useGetSingleEmployeeQuery(employee.id)
-      : useGetSingleManagerQuery(employee.id); // Hodimning mavjud vazifalari
+      : useGetSingleManagerQuery(employee.id);
 
-  const [updateEmployeeTasks] = useAddTasksForEmployeeMutation(); // Hodim vazifalarini yangilash
-  const [updateManagerTasks] = useAddTasksForManagerMutation(); // Manager vazifalarini yangilash
+  const [updateEmployeeTasks] = useAddTasksForEmployeeMutation();
+  const [updateManagerTasks] = useAddTasksForManagerMutation();
 
   const [selectedTasks, setSelectedTasks] = useState([]);
 
@@ -30,12 +28,13 @@ const TaskModal = ({ close, employee }) => {
   }, [data?.tasks]);
 
   const handleTaskChange = (task) => {
-    if (selectedTasks.includes(task)) {
+    if (selectedTasks.some((t) => t.id === task.id)) {
       setSelectedTasks(selectedTasks.filter((t) => t.id !== task.id));
     } else {
       setSelectedTasks([...selectedTasks, task]);
     }
   };
+
   const handleSubmit = async () => {
     try {
       const body = { tasks: selectedTasks };
@@ -51,12 +50,11 @@ const TaskModal = ({ close, employee }) => {
           body,
         }).unwrap();
       }
-      close(); 
+      close();
     } catch (e) {
       console.error("Vazifalarni yangilashda xatolik:", e);
     }
   };
-
 
   return (
     <Modal close={close}>
@@ -73,7 +71,7 @@ const TaskModal = ({ close, employee }) => {
                   <input
                     type="checkbox"
                     id={`task-${task.id}`}
-                    checked={selectedTasks.includes(task)} 
+                    checked={selectedTasks.some((t) => t.id === task.id)}
                     onChange={() => handleTaskChange(task)}
                   />
                   <label htmlFor={`task-${task.id}`}>{task.name}</label>
