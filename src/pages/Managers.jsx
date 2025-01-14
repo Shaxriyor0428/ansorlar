@@ -11,14 +11,7 @@ const Managers = () => {
   const [page, setPage] = useState(1);
   const [open, setOpen] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
-  const shuffleArray = (array) => {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-  };
+  const [searchTerm, setSearchTerm] = useState("");
 
   const { data: managers, isLoading: managersLoading } = useGetManagersQuery({
     page,
@@ -27,18 +20,41 @@ const Managers = () => {
 
   const { data: allManagers } = useGetAllManagersQuery();
 
-  const totalCount =
-    allManagers?.filter((item) => item.type === "manager").length || 0;
+  // Filter the managers based on the search term
+  const filteredManagers = (allManagers || []).filter((item) =>
+    item.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-  const userData = shuffleArray([...(managers || [])]);
-  // console.log(userData);
+  const totalCount = filteredManagers.length;
+  const shuffleArray = (array) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  };
+  // Shuffle the filtered managers
+  const userData = shuffleArray(filteredManagers);
+
+  // Pagination logic
+  const paginatedManagers = userData.slice(
+    (page - 1) * rowsPerPage,
+    page * rowsPerPage
+  );
+
+  // Handle search term change
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+    setPage(1); // Reset to the first page when search term changes
+  };
+
   const handleChangePage = (event, value) => {
     setPage(value);
   };
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(1);
+    setPage(1); // Reset to the first page when rows per page changes
   };
 
   return (
@@ -58,11 +74,13 @@ const Managers = () => {
             type="text"
             className="py-3 pl-10 outline-none border rounded-lg w-[400px] px-2"
             placeholder="Ism bo'yicha qidirish"
+            value={searchTerm}
+            onChange={handleSearchChange}
           />
         </div>
       </div>
       <Employees
-        data={userData}
+        data={paginatedManagers}
         route="manager"
         page={page}
         rowsPerPage={rowsPerPage}
