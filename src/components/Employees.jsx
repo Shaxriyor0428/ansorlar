@@ -26,6 +26,7 @@ const Employees = ({
   const [remove, setRemove] = useState({ id: "", type: "" });
   const [deleteManager] = useDeleteManagerMutation();
   const [deleteEmployee] = useDeleteEmployeeMutation();
+  const [editUser, setEditUser] = useState(null);
 
   const filteredUsers =
     route === "block"
@@ -53,8 +54,9 @@ const Employees = ({
     setRemove({ id: "", type: "" });
   };
 
-  const handleEdit = (id, type) => {
-    // setOpen(true);
+  const handleEdit = (user) => {
+    setEditUser(user);
+    setOpen(true);
   };
 
   const handleChangeStatus = (user) => {
@@ -115,7 +117,10 @@ const Employees = ({
         <tbody>
           {filteredUsers?.map((user, index) => (
             <tr key={index} className="hover:bg-gray-100">
-              <td onClick={()=>handleGetEmployee(user)} className="border-b p-3">
+              <td
+                onClick={() => handleGetEmployee(user)}
+                className="border-b p-3"
+              >
                 {user?.name} {user?.last_name}
               </td>
               <td className="border-b p-3">{user?.type}</td>
@@ -139,11 +144,18 @@ const Employees = ({
               </td>
               <td className="border-b p-3 flex justify-end space-x-2">
                 <button
-                  onClick={() => handleEdit(user?.id, user?.type)}
+                  onClick={() => handleEdit(user)}
                   className="bg-green-500 hover:bg-blue-600 text-white font-medium rounded-md px-4 py-2 transition"
                 >
                   O'zgartirish
                 </button>
+                {editUser && (
+                  <CreateStaff
+                    setOpen={setOpen}
+                    isUpdate={true}
+                    Data={editUser}
+                  />
+                )}
                 <button
                   onClick={() => handleClick(user?.id, user?.type)}
                   className="bg-red-500 hover:bg-red-600 text-white font-medium rounded-md px-4 py-2 transition"

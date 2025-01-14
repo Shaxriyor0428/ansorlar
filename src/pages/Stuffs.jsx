@@ -78,7 +78,7 @@ const Stuffs = () => {
         >
           + Hodim qo'shish
         </button>
-        {open && <CreateStaff setOpen={setOpen} />}
+        {open && <CreateStaff setOpen={setOpen} isUpdate={false} />}
 
         <div className="relative h-full w-full mb-3">
           <IoIosSearch className="text-xl absolute top-[50%] translate-y-[-50%] left-2" />

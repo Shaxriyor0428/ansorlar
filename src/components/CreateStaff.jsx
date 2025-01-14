@@ -1,5 +1,5 @@
 import Modal from "./Modal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   useCreateEmployeeMutation,
   useCreateManagerMutation,
@@ -14,12 +14,20 @@ const initialState = {
   error: "",
 };
 
-const CreateStaff = ({ setOpen }) => {
+const CreateStaff = ({ setOpen, isUpdate, Data }) => {
   const [data, setData] = useState(initialState);
 
   const [createManager] = useCreateManagerMutation();
   const [createEmployee] = useCreateEmployeeMutation();
 
+  console.log(Data);
+  useEffect(() => {
+    if (Data) {
+      setData(Data);
+    }
+  }, [Data]);
+
+  console.log(data);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setData((prevData) => ({
@@ -27,14 +35,27 @@ const CreateStaff = ({ setOpen }) => {
       [name]: value,
     }));
   };
+  const handleCancel = (e) => {
+    // e.preventDefault();
+    setOpen(false);
+    setData(initialState);
+  };
 
   const handleForm = async (e) => {
     e.preventDefault();
     try {
-      if (data.type === "manager") {
-        await createManager(data).unwrap();
+      if (isUpdate) {
+        if(data.type == "manager"){
+          await updateManager(data).unwrap();
+        } else {
+          await updateEmployee(data).unwrap();
+        }
       } else {
-        await createEmployee(data).unwrap();
+        if (data.type === "manager") {
+          await createManager(data).unwrap();
+        } else {
+          await createEmployee(data).unwrap();
+        }
       }
       setData(initialState);
       setOpen(false);
@@ -50,7 +71,7 @@ const CreateStaff = ({ setOpen }) => {
     <Modal>
       <div className="w-[400px] my-6 bg-white rounded-lg shadow-lg p-8 relative">
         <h2 className="text-center text-2xl font-bold text-gray-800">
-          Xodim yaratish
+          {isUpdate ? "Xodimni o'zgartirish" : "Xodim yaratish"}
         </h2>
 
         <form action="#" onSubmit={handleForm} className="mt-6">
@@ -137,7 +158,7 @@ const CreateStaff = ({ setOpen }) => {
           </div>
           <div className="flex gap-2">
             <button
-              onClick={() => setOpen(false)}
+              onClick={() => handleCancel()}
               type="button"
               className="w-full mt-6 bg-blue-500 text-white py-3 rounded-lg text-lg font-semibold shadow-md hover:bg-blue-600 hover:shadow-lg transition-all"
             >
@@ -147,7 +168,7 @@ const CreateStaff = ({ setOpen }) => {
               type="submit"
               className="w-full mt-6 bg-green-500 text-white py-3 rounded-lg text-lg font-semibold shadow-md hover:bg-green-600 hover:shadow-lg transition-all"
             >
-              Yaratish
+              {isUpdate ? "O'zgartirish" : "Yaratish"}
             </button>
           </div>
         </form>
