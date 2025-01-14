@@ -120,7 +120,7 @@ const CreateStaff = ({ setOpen }) => {
               className="text-sm font-medium text-gray-600"
             >
               Holati
-            </label>
+            </label>``
             <select
               name="is_active"
               value={data.is_active}
