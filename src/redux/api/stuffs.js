@@ -59,7 +59,7 @@ const managerApi = api.injectEndpoints({
       invalidatesTags: ["Employees"],
     }),
     addTasksForManager: build.mutation({
-      query: ({ managerId, body }) =>({
+      query: ({ managerId, body }) => ({
         url: `/managers/${managerId}`,
         method: "PATCH",
         body,
@@ -67,7 +67,7 @@ const managerApi = api.injectEndpoints({
       invalidatesTags: ["Managers"],
     }),
     addTasksForEmployee: build.mutation({
-      query: ({ employeeId, body }) =>({
+      query: ({ employeeId, body }) => ({
         url: `/employees/${employeeId}`,
         method: "PATCH",
         body,
