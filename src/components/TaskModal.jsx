@@ -12,7 +12,7 @@ import { useGetTasksQuery } from "../redux/api/tasks";
 const TaskModal = ({ close, employee }) => {
   const { data: allTasks = [], isLoading: allTasksLoading } = useGetTasksQuery(
     {}
-  ); // Barcha mavjud vazifalar
+  ); 
   const { data, isLoading: employeeTasksLoading } =
     employee.type === "employee"
       ? useGetSingleEmployeeQuery(employee.id)
@@ -25,38 +25,38 @@ const TaskModal = ({ close, employee }) => {
 
   useEffect(() => {
     if (data?.tasks?.length > 0) {
-      setSelectedTasks(data.tasks.map((task) => task)); // Hodimda mavjud vazifalarni belgilash
+      setSelectedTasks(data.tasks.map((task) => task));
     }
   }, [data?.tasks]);
 
   const handleTaskChange = (task) => {
-    // Vazifani tanlash yoki olib tashlash
     if (selectedTasks.includes(task)) {
       setSelectedTasks(selectedTasks.filter((t) => t.id !== task.id));
     } else {
       setSelectedTasks([...selectedTasks, task]);
     }
   };
-
   const handleSubmit = async () => {
     try {
+      const body = { tasks: selectedTasks };
+      console.log(body);
       if (employee.type === "employee") {
         await updateEmployeeTasks({
           employeeId: employee.id,
-          tasks: selectedTasks,
-        }); // Tanlangan vazifalarni yangilash
+          body,
+        }).unwrap();
       } else {
-        console.log(selectedTasks)
         await updateManagerTasks({
           managerId: employee.id,
-          tasks: selectedTasks,
-        }); // Tanlangan vazifalarni yangilash
+          body,
+        }).unwrap();
       }
-      close(); // Modalni yopish
+      close(); 
     } catch (e) {
       console.error("Vazifalarni yangilashda xatolik:", e);
     }
   };
+
 
   return (
     <Modal close={close}>
@@ -73,7 +73,7 @@ const TaskModal = ({ close, employee }) => {
                   <input
                     type="checkbox"
                     id={`task-${task.id}`}
-                    checked={selectedTasks.includes(task)} // Belgini tekshirish
+                    checked={selectedTasks.includes(task)} 
                     onChange={() => handleTaskChange(task)}
                   />
                   <label htmlFor={`task-${task.id}`}>{task.name}</label>

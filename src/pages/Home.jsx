@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import empty from "../assets/empty.png";
 import { useSelector } from "react-redux";
 import TaskModal from "../components/TaskModal";
+import { useGetSingleEmployeeQuery, useGetSingleManagerQuery } from "../redux/api/stuffs";
 const Home = () => {
   const selectedEmployee = useSelector(
     (state) => state.employee.selectedEmployee
@@ -11,6 +12,13 @@ const Home = () => {
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+  const { data, isLoading: employeeTasksLoading } =
+    selectedEmployee.type === "employee"
+      ? useGetSingleEmployeeQuery(selectedEmployee?.id)
+      : useGetSingleManagerQuery(selectedEmployee?.id); 
+      useEffect(() => {
+    
+  }, [data]);
   if (!selectedEmployee) {
     return (
       <div>
@@ -36,7 +44,7 @@ const Home = () => {
           Hunarlari/tasks:
         </h3>
         <ul className="list-decimal list-inside text-gray-600 space-y-1 mb-6">
-          {selectedEmployee.tasks?.map((task, index) => (
+          {data?.tasks?.map((task, index) => (
             <li key={index}>{task.name}</li>
           ))}
         </ul>
@@ -47,7 +55,9 @@ const Home = () => {
           Task qo'shish
         </button>
       </div>
-      {isModalOpen && <TaskModal close={closeModal} employee={selectedEmployee} />}
+      {isModalOpen && (
+        <TaskModal close={closeModal} employee={selectedEmployee} />
+      )}
     </div>
   );
 };
