@@ -11,7 +11,7 @@ import Modal from "../components/Modal";
 const Tasks = () => {
   const { data } = useGetTasksQuery({});
   const [deleteTask] = useDeleteTaskMutation();
-  const [createTask] = useCreateTaskMutation(); 
+  const [createTask] = useCreateTaskMutation();
   const [updateTask] = useUpdateTaskMutation();
 
   const [openAddTaskModal, setOpenAddTaskModal] = useState(false);
@@ -20,7 +20,22 @@ const Tasks = () => {
   const [open, setOpen] = useState(false);
   const [remove, setRemove] = useState({ id: "", type: "" });
 
-  const handleAddTaskModal = () => {setOpenAddTaskModal(true);};
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredTasks, setFilteredTasks] = useState(data || []);
+
+  const handleSearchChange = (e) => {
+    const searchValue = e.target.value.toLowerCase();
+    setSearchTerm(searchValue);
+
+    const filtered = data?.filter((task) =>
+      task.name.toLowerCase().includes(searchValue)
+    );
+    setFilteredTasks(filtered);
+  };
+
+  const handleAddTaskModal = () => {
+    setOpenAddTaskModal(true);
+  };
 
   const handleTaskInputChange = (e) => {
     const { name, value } = e.target;
@@ -29,7 +44,7 @@ const Tasks = () => {
       [name]: value,
     }));
   };
-// 
+  //
   const [editTask, setEditTask] = useState({ id: "", name: "", type: "" });
   const [openEditTaskModal, setOpenEditTaskModal] = useState(false);
 
@@ -57,7 +72,7 @@ const Tasks = () => {
     setOpenEditTaskModal(false);
     setEditTask({ id: "", name: "", type: "" });
   };
-// 
+  //
 
   const handleCloseModal = () => {
     setOpenAddTaskModal(false);
@@ -120,9 +135,6 @@ const Tasks = () => {
           </div>
         </Modal>
       )}
-      ,
-
-
 
       {openEditTaskModal && (
         <Modal>
@@ -178,8 +190,6 @@ const Tasks = () => {
           </div>
         </Modal>
       )}
-
-
 
       {openAddTaskModal && (
         <Modal>
@@ -242,17 +252,22 @@ const Tasks = () => {
         >
           + Vazifa qo'shish
         </button>
+
         <div className="relative h-full w-full">
           <IoIosSearch className="text-xl absolute top-[50%] translate-y-[-50%] left-2" />
+
           <input
             type="text"
+            value={searchTerm}
+            onChange={handleSearchChange}
             className="py-3 pl-10 outline-none border rounded-lg w-[400px] px-2"
             placeholder="Vazifa nomi bo'yicha qidirish"
           />
         </div>
       </div>
+
       <div className="w-full border border-gray-200 rounded-2xl pr-6">
-        {data?.map((item, index) => (
+        {filteredTasks?.map((item, index) => (
           <div
             key={index}
             className="flex justify-between items-center py-3 px-4 border-b last:border-b-0"
@@ -268,7 +283,6 @@ const Tasks = () => {
               >
                 O'zgartirish
               </button>
-
               <button
                 onClick={() => handleClick(item?.id, item?.type)}
                 className="bg-red-500 text-white font-medium rounded-md px-4 py-2"
